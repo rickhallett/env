@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Check for debugging statements before commiting your code.
+#
+
+# List of function names to search for in regex format
+FUNCTIONS='debugger|func2|func3'
+
+# If any functions are found as executable, prevent the commit.
+DIEONFAIL=true
+
+echo "Running the debugger check..."
+RES=`egrep -nr --exclude-dir=".git" "^(\s*)?[^/{2}]($FUNCTIONS)\(.*\)" .`
+DEBUGGER=`egrep -nr --exclude-dir=".git" "^(\s*)?[^/{2}]($FUNCTIONS)" .`
+
+if [[ -n "$DEBUGGER" ]] || [ -n "$RES" ]]; then
+  echo "\n$RES"
+  echo "\nDebugging functions were found in your code!"
+
+  if [[ $DIEONFAIL == true ]]; then
+    echo "Changes were not committed."
+    exit 1;
+  else
+    echo "You may want to clean these up before you push those changes.\nChanges were committed anyway.\n"
+    exit 0;
+  fi
+else
+  echo "\n No debugging functions were found.  Nice job bro. \n";
+  exit 0;
+fi
