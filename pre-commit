@@ -14,8 +14,15 @@ RES=`egrep -nr --exclude-dir=".git" "^(\s*)?[^/{2}]($FUNCTIONS)\(.*\)" .`
 DEBUGGER=`egrep -nr --exclude-dir=".git" "^(\s*)?[^/{2}]($FUNCTIONS)" .`
 
 if [[ -n "$DEBUGGER" ]] || [ -n "$RES" ]]; then
-  echo "\n$RES"
-  echo "\nDebugging functions were found in your code!"
+  if [[ -n "$DEBUGGER" ]]; then
+      echo "\n$DEBUGGER"
+      echo "\n"
+  fi
+
+  if [[ -n "$RES" ]]; then
+      echo "\n$RES"
+      echo "\n"
+  fi
 
   if [[ $DIEONFAIL == true ]]; then
     echo "Changes were not committed."
